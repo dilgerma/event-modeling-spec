@@ -1,0 +1,281 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "slices": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Slice" }
+    }
+  },
+  "required": ["slices"],
+  "additionalProperties": false,
+
+  "$defs": {
+    "Slice": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "status": {
+          "type": "string",
+          "enum": ["Created", "Done", "InProgress"]
+        },
+        "index": { "type": "integer" },
+        "title": { "type": "string" },
+        "context": { "type": "string" },
+        "sliceType": {
+          "type": "string",
+          "enum": ["STATE_CHANGE", "STATE_VIEW", "AUTOMATION"]
+        },
+        "commands": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Element" }
+        },
+        "events": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Element" }
+        },
+        "readmodels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Element" }
+        },
+        "screens": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Element" }
+        },
+        "screenImages": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ScreenImage" }
+        },
+        "processors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Element" }
+        },
+        "tables": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Table" }
+        },
+        "specifications": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Specification" }
+        },
+        "actors": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Actor" }
+        },
+        "aggregates": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "sliceType",
+        "commands",
+        "events",
+        "readmodels",
+        "screens",
+        "processors",
+        "tables",
+        "specifications"
+      ],
+      "additionalProperties": false
+    },
+
+    "Element": {
+      "type": "object",
+      "properties": {
+        "groupId": { "type": "string" },
+        "id": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "domain": { "type": "string" },
+        "modelContext": { "type": "string" },
+        "context": { "type": "string", "enum": ["INTERNAL", "EXTERNAL"] },
+        "slice": { "type": "string" },
+        "title": { "type": "string" },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Field" }
+        },
+        "type": {
+          "type": "string",
+          "enum": ["COMMAND", "EVENT", "READMODEL", "SCREEN", "AUTOMATION"]
+        },
+        "description": { "type": "string" },
+        "aggregate": { "type": "string" },
+        "aggregateDependencies": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "dependencies": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Dependency" }
+        },
+        "apiEndpoint": { "type": "string" },
+        "service": { "type": ["string", "null"] },
+        "createsAggregate": { "type": "boolean" },
+        "triggers": { "type": "array", "items": { "type": "string" } },
+        "sketched": { "type": "boolean" },
+        "prototype": { "type": "object" },
+        "listElement": { "type": "boolean" }
+      },
+      "required": ["id", "title", "fields", "type", "dependencies"],
+      "additionalProperties": false
+    },
+
+    "ScreenImage": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" }
+      },
+      "required": ["id", "title"],
+      "additionalProperties": false
+    },
+
+    "Table": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Field" }
+        }
+      },
+      "required": ["id", "title", "fields"],
+      "additionalProperties": false
+    },
+
+    "Specification": {
+      "type": "object",
+      "properties": {
+        "vertical": { "type": "boolean" },
+        "id": { "type": "string" },
+        "sliceName": { "type": "string" },
+        "title": { "type": "string" },
+        "given": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SpecificationStep" }
+        },
+        "when": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SpecificationStep" }
+        },
+        "then": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/SpecificationStep" }
+        },
+        "comments": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Comment" }
+        },
+        "linkedId": { "type": "string" }
+      },
+      "required": ["id", "title", "given", "when", "then", "linkedId"],
+      "additionalProperties": false
+    },
+
+    "SpecificationStep": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "examples": { "type": "array", "items": { "type": "object" } },
+        "id": { "type": "string" },
+        "index": { "type": "integer" },
+        "specRow": { "type": "integer" },
+        "type": {
+          "type": "string",
+          "enum": ["SPEC_EVENT", "SPEC_COMMAND", "SPEC_READMODEL", "SPEC_ERROR"]
+        },
+        "fields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Field" }
+        },
+        "linkedId": { "type": "string" },
+        "expectEmptyList": { "type": "boolean" }
+      },
+      "required": ["title", "id", "type"],
+      "additionalProperties": false
+    },
+
+    "Comment": {
+      "type": "object",
+      "properties": { "description": { "type": "string" } },
+      "required": ["description"],
+      "additionalProperties": false
+    },
+
+    "Actor": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "authRequired": { "type": "boolean" }
+      },
+      "required": ["name", "authRequired"],
+      "additionalProperties": false
+    },
+
+    "Dependency": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["INBOUND", "OUTBOUND"] },
+        "title": { "type": "string" },
+        "elementType": {
+          "type": "string",
+          "enum": ["EVENT", "COMMAND", "READMODEL", "SCREEN", "AUTOMATION"]
+        }
+      },
+      "required": ["id", "type", "title", "elementType"],
+      "additionalProperties": false
+    },
+
+    "Field": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "type": {
+          "type": "string",
+          "enum": [
+            "String",
+            "Boolean",
+            "Double",
+            "Decimal",
+            "Long",
+            "Custom",
+            "Date",
+            "DateTime",
+            "UUID",
+            "Int"
+          ]
+        },
+        "example": {
+          "oneOf": [
+            { "type": "string" },
+            { "type": "object" }
+          ]
+        },
+        "subfields": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/Field" }
+        },
+        "mapping": { "type": "string" },
+        "optional": { "type": "boolean" },
+        "technicalAttribute": { "type": "boolean" },
+        "generated": { "type": "boolean" },
+        "idAttribute": { "type": "boolean" },
+        "schema": { "type": "string" },
+        "cardinality": {
+          "type": "string",
+          "enum": ["List", "Single"]
+        }
+      },
+      "required": ["name", "type"],
+      "additionalProperties": false
+    }
+  }
+}
+
